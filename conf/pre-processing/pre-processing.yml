@@ -1,0 +1,25 @@
+catwise:
+  url: https://portal.nersc.gov/project/cosmo/data/CatWISE/2020/
+  start_folder: 0
+  end_folder: 1
+  columns:
+    - source_name
+    - source_id
+    - ra
+    - dec
+    - sigra
+    - sigdec
+    - w1mag
+    - w1sigm
+    - w1flg
+    - w2mag
+    - w2sigm
+    - w2flg
+    - pmra
+    - pmdec
+    - sigpmra
+    - sigpmdec
+    - w1k
+    - w2k
+    - w1mlq
+    - w2mlq
