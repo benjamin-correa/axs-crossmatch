@@ -29,4 +29,5 @@ typed-ast==1.5.4
 typing_extensions==4.4.0
 urllib3==1.26.12
 virtualenv==20.16.6
+wget==3.2
 zipp==3.10.0
