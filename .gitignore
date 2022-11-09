@@ -2,7 +2,8 @@
 # AXS PROJECT
 
 # Not commiting data
-data/raw/**
+data/01_raw/**
+data/02_intermediate/**
 
 # also keep all .gitkeep files
 !.gitkeep
