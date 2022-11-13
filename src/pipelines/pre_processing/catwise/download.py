@@ -2,7 +2,9 @@ import logging
 import os
 import sys
 from multiprocessing import Process
+from typing import List
 
+import numpy as np
 import requests
 import wget
 from bs4 import BeautifulSoup
@@ -14,26 +16,29 @@ from utils.global_constants import DOWNLOAD_CATALOG_DICT, RAW_DATA_PATH  # noqa 
 log = logging.getLogger(__name__)
 
 
-def _download_wget(folder_url: str, element: str):
+def _download_wget(folder_url: str, elements: List[str]):
     """Use wget to download the data from the catalog.
 
     Args:
         folder_url (str): Url that will be used to download the file
         el (str): element to download
     """
-    if os.path.exists(RAW_DATA_PATH.joinpath("catwise/", element)):
-        log.info(
-            f"File already exists in: {RAW_DATA_PATH.joinpath('catwise/', element)}"
-        )
-    else:
-        log.info(
-            f"Downloading: {folder_url}{element} -> {RAW_DATA_PATH.joinpath('catwise/', element)}"
-        )
-        wget.download(
-            folder_url + element,
-            f"{RAW_DATA_PATH.joinpath('catwise/', element)}",
-            bar=None,
-        )
+    for element in elements:
+        if "rej" in element:
+            continue
+        elif os.path.exists(RAW_DATA_PATH.joinpath("catwise/", element)):
+            log.info(
+                f"File already exists in: {RAW_DATA_PATH.joinpath('catwise/', element)}"
+            )
+        else:
+            log.info(
+                f"Downloading: {folder_url}{element} -> {RAW_DATA_PATH.joinpath('catwise/', element)}"
+            )
+            wget.download(
+                folder_url + element,
+                f"{RAW_DATA_PATH.joinpath('catwise/', element)}",
+                bar=None,
+            )
 
 
 def _download_folder(folder_num: int, catalog_url: str):
@@ -56,34 +61,31 @@ def _download_folder(folder_num: int, catalog_url: str):
 
     # initialisation
     processes = []
-    file_number = 0
     number_processes = 4
-    while file_number < len(links):
-        # creation of the processes and their result queue
-        for i in range(number_processes):
-            try:
-                file = links[file_number]
-                file_number += 1
-                processes.append(
-                    Process(
-                        target=_download_wget,
-                        args=(
-                            folder_url,
-                            file,
-                        ),
-                    )
+    files = np.array_split(links, number_processes)
+    # creation of the processes and their result queue
+    for i in range(number_processes):
+        try:
+            processes.append(
+                Process(
+                    target=_download_wget,
+                    args=(
+                        folder_url,
+                        files[i],
+                    ),
                 )
-                processes[i].start()
-            except IndexError:  # Index out of range, the links remaining are less than the number of processes
-                break
+            )
+            processes[i].start()
+        except IndexError:  # Index out of range, the links remaining are less than the number of processes
+            break
 
-        # Wait for a process to terminate and get its result from the queue
-        for i in range(number_processes):
-            try:
-                processes[i].join()
-            except IndexError:  # Index out of range, the links remaining are less than the number of processes
-                break
-        processes = []
+    # Wait for a process to terminate and get its result from the queue
+    for i in range(number_processes):
+        try:
+            processes[i].join()
+        except IndexError:  # Index out of range, the links remaining are less than the number of processes
+            break
+    processes = []
 
 
 if __name__ == "__main__":
