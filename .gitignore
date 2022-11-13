@@ -4,6 +4,7 @@
 # Not commiting data
 data/01_raw/**
 data/02_intermediate/**
+data/03_primary/**
 
 # also keep all .gitkeep files
 !.gitkeep
@@ -16,7 +17,7 @@ data/02_intermediate/**
 # ipython
 .ipython/*
 
-notebooks/reporting/.ipynb_checkpoints/*
+notebooks/*
 
 
 # IntelliJ
