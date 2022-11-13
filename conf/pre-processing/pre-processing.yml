@@ -1,0 +1,98 @@
+# Spark pre-processing
+catwise:
+  url: https://portal.nersc.gov/project/cosmo/data/CatWISE/2020/
+  start_folder: 0
+  end_folder: 1
+  columns_map:
+    source_name:
+      type: StringType
+      args:
+    source_id:
+      type: StringType
+      args:
+    ra:
+      type: DecimalType
+      args:
+        - 19
+        - 7
+    dec:
+      type: DecimalType
+      args:
+        - 19
+        - 7
+    sigra:
+      type: DecimalType
+      args:
+        - 13
+        - 4
+    sigdec:
+      type: DecimalType
+      args:
+        - 13
+        - 4
+    w1mag:
+      type: DecimalType
+      args:
+        - 10
+        - 2
+    w1sigm:
+      type: DecimalType
+      args:
+        - 10
+        - 2
+    w1flg:
+      type: IntegerType
+      args:
+    w2mag:
+      type: DecimalType
+      args:
+        - 10
+        - 2
+    w2sigm:
+      type: DecimalType
+      args:
+        - 10
+        - 2
+    w2flg:
+      type: IntegerType
+      args:
+    pmra:
+      type: DecimalType
+      args:
+        - 15
+        - 5
+    pmdec:
+      type: DecimalType
+      args:
+        - 15
+        - 5
+    sigpmra:
+      type: DecimalType
+      args:
+        - 13
+        - 4
+    sigpmdec:
+      type: DecimalType
+      args:
+        - 13
+        - 4
+    w1k:
+      type: DecimalType
+      args:
+        - 17
+        - 5
+    w2k:
+      type: DecimalType
+      args:
+        - 17
+        - 5
+    w1mlq:
+      type: DecimalType
+      args:
+        - 8
+        - 2
+    w2mlq:
+      type: DecimalType
+      args:
+        - 8
+        - 2
