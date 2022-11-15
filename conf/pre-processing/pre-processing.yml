@@ -2,7 +2,7 @@
 catwise:
   url: https://portal.nersc.gov/project/cosmo/data/CatWISE/2020/
   start_folder: 0
-  end_folder: 1
+  end_folder: 2
   columns_map:
     source_name:
       type: StringType

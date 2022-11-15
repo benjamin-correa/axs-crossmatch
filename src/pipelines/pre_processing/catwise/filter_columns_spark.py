@@ -16,6 +16,8 @@ from utils.global_constants import (
     INTERMEDIATE_DATA_PATH,
 )  # noqa E402
 
+from utils.global_utils import start_spark  # noqa E402
+
 log = logging.getLogger(__name__)
 
 
@@ -98,9 +100,15 @@ def _tbl_to_parquet(file_name: str, input_folder: str, output_folder: str):
             )
         )
 
-        catwise_table_casted.write.mode("overwrite").parquet(
-            str(output_folder.joinpath(file_name.replace("tbl.gz", "parquet")))
-        )
+        try:
+            catwise_table_casted.write.parquet(
+                str(output_folder.joinpath(file_name.replace("tbl.gz", "parquet")))
+            )
+        except:
+            log.info(
+                f"{str(output_folder.joinpath(file_name.replace('tbl.gz', 'parquet')))} Already exist"
+            )
+            pass
 
     except OSError or EOFError:
         log.info(
@@ -109,7 +117,7 @@ def _tbl_to_parquet(file_name: str, input_folder: str, output_folder: str):
 
 
 if __name__ == "__main__":
-    spark = SparkSession.builder.getOrCreate()
+    spark = start_spark()
 
     log.info(
         f"Selecting the following columns {DOWNLOAD_CATALOG_DICT['catwise']['columns_map']}"
