@@ -10,6 +10,9 @@ filter-columns:
 transform-coordinates:
 	@python src/pipelines/pre_processing/catwise/transform_coordinates.py
 
+join-tables:
+	@python src/pipelines/pre_processing/catwise/join_tables.py
+
 download:
 	@python src/pipelines/pre_processing/catwise/download.py
 
