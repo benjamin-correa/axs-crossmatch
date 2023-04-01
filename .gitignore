@@ -5,6 +5,7 @@
 data/01_raw/**
 data/02_intermediate/**
 data/03_primary/**
+data/04_query/**
 
 # also keep all .gitkeep files
 !.gitkeep
