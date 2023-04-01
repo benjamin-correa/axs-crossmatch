@@ -27,8 +27,8 @@ RUN tar -xvzf spark-3.0.2-bin-hadoop3.2.tgz && \
 
 # Downloads Sedona-Python-Adapter, Geotools & Postgres jars
 RUN mkdir -p /opt/spark/extra_jars/
-RUN wget https://repo1.maven.org/maven2/org/apache/sedona/sedona-python-adapter-3.0_2.12/1.1.1-incubating/sedona-python-adapter-3.0_2.12-1.1.1-incubating.jar && mv sedona-python-adapter-3.0_2.12-1.1.1-incubating.jar /opt/spark/extra_jars/
-RUN wget https://repo1.maven.org/maven2/org/datasyslab/geotools-wrapper/1.1.0-25.2/geotools-wrapper-1.1.0-25.2.jar && mv geotools-wrapper-1.1.0-25.2.jar /opt/spark/extra_jars/
+RUN wget https://repo1.maven.org/maven2/org/apache/sedona/sedona-python-adapter-3.0_2.12/1.3.1-incubating/sedona-python-adapter-3.0_2.12-1.3.1-incubating.jar && mv sedona-python-adapter-3.0_2.12-1.3.1-incubating.jar /opt/spark/extra_jars/
+RUN wget https://repo1.maven.org/maven2/org/datasyslab/geotools-wrapper/1.3.0-27.2/geotools-wrapper-1.3.0-27.2.jar && mv geotools-wrapper-1.3.0-27.2.jar /opt/spark/extra_jars/
 RUN wget https://jdbc.postgresql.org/download/postgresql-42.2.25.jre6.jar && mv postgresql-42.2.25.jre6.jar /opt/spark/extra_jars/
 
 # Sets PATH

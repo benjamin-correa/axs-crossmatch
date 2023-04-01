@@ -11,15 +11,11 @@ catwise:
       type: StringType
       args:
     ra:
-      type: DecimalType
+      type: DoubleType
       args:
-        - 19
-        - 7
     dec:
-      type: DecimalType
+      type: DoubleType
       args:
-        - 19
-        - 7
     sigra:
       type: DecimalType
       args:

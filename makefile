@@ -1,11 +1,20 @@
-current_dir := $(shell pwd)
+# @python src/pipelines/pre_processing/catwise/join_tables.py
+test:
+	@python src/pipelines/query/catwise/test.py
+	@python src/pipelines/query/catwise/query_data.py
 
 filter-columns:
 	@find data/02_intermediate/** -empty -type d -delete
 	@python src/pipelines/pre_processing/catwise/filter_columns_spark.py
 
+transform-coordinates:
+	@python src/pipelines/pre_processing/catwise/transform_coordinates.py
+
 download:
 	@python src/pipelines/pre_processing/catwise/download.py
+
+install:
+	pip install -r requirements.txt
 
 pre-processing:
 	@python src/pipelines/pre_processing/catwise/download.py

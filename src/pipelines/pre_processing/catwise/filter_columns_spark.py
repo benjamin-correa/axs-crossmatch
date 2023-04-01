@@ -5,7 +5,6 @@ from typing import List
 from typing import Optional
 
 import pyspark.sql.types
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 
 sys.path.append("src")
