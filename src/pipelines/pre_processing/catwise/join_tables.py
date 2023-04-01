@@ -49,7 +49,7 @@ if __name__ == "__main__":
             catwise_geom = spark.sql(
                 f"""
                 SELECT
-                    ST_Point(ra, dec) AS coords, {', '.join(columns)}
+                    ra AS ra_point, dec AS dec_point, {', '.join(columns)}
                 FROM
                     table
                 """
@@ -61,6 +61,6 @@ if __name__ == "__main__":
     from pyspark.sql.functions import col
 
     union_sdf = union_sdf.select([col(c).cast("string") for c in union_sdf.columns])
-    union_sdf.write.mode("overwrite").parquet(
-        str(primary_catwise_path.joinpath("catwise.parquet"))
+    union_sdf.write.mode("overwrite").option("header", False).csv(
+        str(primary_catwise_path.joinpath("catwise.csv"))
     )

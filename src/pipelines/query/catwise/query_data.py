@@ -55,7 +55,7 @@ if __name__ == "__main__":
     from sedona.core.enums import FileDataSplitter
 
     offset = 0  # The point long/lat starts from Column 0
-    splitter = FileDataSplitter.WKT  # FileDataSplitter enumeration
+    splitter = FileDataSplitter.CSV  # FileDataSplitter enumeration
     carry_other_attributes = True  # Carry Column 2 (hotel, gas, bar...)
     level = StorageLevel.MEMORY_ONLY  # Storage level from pyspark
     query_window_rdd = PointRDD(
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     )
 
     offset = 0  # The point long/lat starts from Column 0
-    splitter = FileDataSplitter.WKT  # FileDataSplitter enumeration
+    splitter = FileDataSplitter.CSV  # FileDataSplitter enumeration
     carry_other_attributes = True  # Carry Column 2 (hotel, gas, bar...)
     level = StorageLevel.MEMORY_ONLY  # Storage level from pyspark
     s_epsg = "epsg:4326"  # Source epsg code
@@ -120,7 +120,10 @@ if __name__ == "__main__":
     results_rdd_1 = result1.to_rdd()
     print(
         results_rdd_1.map(
-            lambda x: [x[0].geom, [result.geom for result in x[1]]]
+            lambda x: [
+                [x[0].geom, x[0].userData],
+                [[result.geom, result.userData] for result in x[1]],
+            ]
         ).collect()
     )
 

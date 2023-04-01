@@ -22,7 +22,9 @@ if __name__ == "__main__":
         ra_list.append(ra)
         dec_list.append(dec)
     df = pd.DataFrame({"geometry": points, "ra": ra_list, "dec": dec_list})
-    df.to_csv("data/03_primary/catwise/test_points.csv", index=False)
-    df.sample(1).to_csv("data/03_primary/catwise/test_one_point.csv", index=False)
+    df.to_csv("data/03_primary/catwise/test_points.csv", index=False, header=False)
+    df.sample(1).to_csv(
+        "data/03_primary/catwise/test_one_point.csv", index=False, header=False
+    )
     # gdf.to_csv("data/03_primary/catwise/test_points.csv", index=False)
     # gdf.to_file("data/03_primary/catwise/test_points.geojson", driver='GeoJSON')
