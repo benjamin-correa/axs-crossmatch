@@ -115,7 +115,9 @@ def start_spark():
             .config("spark.serializer", KryoSerializer.getName)
             .config("spark.kryo.registrator", SedonaKryoRegistrator.getName)
             .config("spark.jars", ",".join(extra_jars))
-            .config("spark.executor.memory", "7g")
+            .config("spark.executor.memory", "200G")
+            .config("spark.driver.memory", "200G")
+            .config("spark.driver.maxResultSize", "200G")
             .getOrCreate()
         )
 

@@ -7,11 +7,12 @@ filter-columns:
 	@find data/02_intermediate/** -empty -type d -delete
 	@python src/pipelines/pre_processing/catwise/filter_columns_spark.py
 
-transform-coordinates:
-	@python src/pipelines/pre_processing/catwise/transform_coordinates.py
 
 join-tables:
 	@python src/pipelines/pre_processing/catwise/join_tables.py
+
+convert-csv:
+	@python src/pipelines/pre_processing/catwise/convert_to_spark_csv.py
 
 download:
 	@python src/pipelines/pre_processing/catwise/download.py

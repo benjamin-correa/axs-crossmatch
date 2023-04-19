@@ -1,8 +1,8 @@
 # Spark pre-processing
 catwise:
   url: https://portal.nersc.gov/project/cosmo/data/CatWISE/2020/
-  start_folder: 0
-  end_folder: 2
+  start_folder: 102
+  end_folder: 359
   columns_map:
     source_name:
       type: StringType

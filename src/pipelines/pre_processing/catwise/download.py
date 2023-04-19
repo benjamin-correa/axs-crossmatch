@@ -61,7 +61,7 @@ def _download_folder(folder_num: int, catalog_url: str):
 
     # initialisation
     processes = []
-    number_processes = 4
+    number_processes = 8
     files = np.array_split(links, number_processes)
     # creation of the processes and their result queue
     for i in range(number_processes):

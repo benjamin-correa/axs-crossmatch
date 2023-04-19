@@ -6,6 +6,7 @@ from typing import Optional
 
 import pyspark.sql.types
 from pyspark.sql.functions import col
+import os
 
 sys.path.append("src")
 
@@ -73,7 +74,7 @@ def _cast_column(cast_function_str: str, args: Optional[List[str]]):
         return cast_function()
 
 
-def _tbl_to_parquet(file_name: str, input_folder: str, output_folder: str):
+def _tbl_to_csv(file_name: str, input_folder: str, output_folder: str):
     """Tranform a catwise tbl to parquet and selects the given columns.
 
     Args:
@@ -81,7 +82,7 @@ def _tbl_to_parquet(file_name: str, input_folder: str, output_folder: str):
         input_folder (str): Folder where the files will be read
         output_folder (str): Folder where the files will be saved
     """
-    log.info(f"Tranforming {file_name} into a parquet file")
+    log.info(f"Tranforming {file_name} into a csv file")
     try:
         catwise_table = _read_catwise_tbl_gz(input_folder.joinpath(file_name))
 
@@ -100,13 +101,16 @@ def _tbl_to_parquet(file_name: str, input_folder: str, output_folder: str):
         )
 
         try:
-            catwise_table_casted.write.parquet(
-                str(output_folder.joinpath(file_name.replace("tbl.gz", "parquet")))
+            catwise_table_casted.write.option("header", False).csv(
+                str(output_folder.joinpath(file_name.replace("tbl.gz", "csv")))
             )
         except:
             log.info(
-                f"{str(output_folder.joinpath(file_name.replace('tbl.gz', 'parquet')))} Already exist"
+                f"{str(output_folder.joinpath(file_name.replace('tbl.gz', 'csv')))} Already exist"
             )
+        try:
+            os.remove(input_folder.joinpath(file_name))
+        except:
             pass
 
     except OSError or EOFError:
@@ -136,7 +140,7 @@ if __name__ == "__main__":
 
     for file_name in files:
         if file_name.endswith(".tbl.gz"):
-            _tbl_to_parquet(
+            _tbl_to_csv(
                 file_name,
                 input_folder=raw_catwise_path,
                 output_folder=intermediate_catwise_path,

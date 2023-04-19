@@ -13,7 +13,7 @@ if __name__ == "__main__":
     ra_list = []
     dec_list = []
     radius = uniform(0.05, 1)
-    for i in range(50000):
+    for i in range(20000):
         ra = uniform(0.0, 1.0)
         dec = uniform(-90.0, 90.0)
         log.info(f"Making query with ra={ra}, dec={dec}, radius={radius}")
