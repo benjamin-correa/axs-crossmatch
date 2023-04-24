@@ -41,5 +41,5 @@ ENV PYTHONPATH=$SPARK_HOME/python:%SPARK_HOME%/python/lib/py4j-0.10.9-src.zip:$P
 ENV PYSPARK_PYTHON python3
 ENV PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/python:$PATH
 
-# Exposing port 8888
-EXPOSE 8888
+# Exposing port 8080
+EXPOSE 8080
