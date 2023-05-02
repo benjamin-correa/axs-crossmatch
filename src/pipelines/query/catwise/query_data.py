@@ -31,25 +31,13 @@ if __name__ == "__main__":
 
     spark = start_spark()
     sc = spark.sparkContext
-    primary_catwise_path = PRIMARY_DATA_PATH.joinpath("catwise")
+    print(PRIMARY_DATA_PATH)
+    primary_catwise_path = PRIMARY_DATA_PATH + "catwise"
 
-    file_path = str(primary_catwise_path.joinpath("catwise.csv"))
-
+    file_path = primary_catwise_path + "catwise.csv"
+    print(primary_catwise_path)
     catwise_df = spark.read.format("csv").load(file_path)
-    # catwise_df = _read_parquet(file_path)
-    # catwise_df.createOrReplaceTempView("catwise")
 
-    # counties_geom = spark.sql(
-    #     """
-    #     SELECT
-    #         *
-    #     FROM
-    #         catwise
-    #     LIMIT 10
-    #     """
-    # )
-    # print(counties_geom.first())
-    # print(hola)
 
     from pyspark import StorageLevel
     from sedona.core.enums import FileDataSplitter

@@ -24,6 +24,10 @@
     <value>0</value>
   </property>
   <property>
+    <name>dfs.namenode.fs-limits.max-blocks-per-file</name>
+    <value>50000</value>
+  </property>
+  <property>
     <name>dfs.blocksize</name>
     <value>512</value>
   </property>

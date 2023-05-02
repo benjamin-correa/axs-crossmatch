@@ -16,20 +16,20 @@ logging.basicConfig(
 
 NUMBER_PROCESSES = 4
 
-ROOT_DIR = Path(os.getcwd())
+# ROOT_DIR = Path(os.getcwd())
 
-CONGIF_FOLDER = ROOT_DIR.joinpath("conf/")
+CONGIF_FOLDER = "conf/"
 
-GLOBALS_CONFIG = CONGIF_FOLDER.joinpath("globals.yml")
+GLOBALS_CONFIG = CONGIF_FOLDER + "globals.yml"
 
-DOWNLOAD_CONFIG = CONGIF_FOLDER.joinpath("pre-processing", "pre-processing.yml")
+DOWNLOAD_CONFIG = CONGIF_FOLDER + "pre-processing/" + "pre-processing.yml"
 
 DOWNLOAD_CATALOG_DICT = read_yaml(DOWNLOAD_CONFIG)
 
 GLOBALS_CONFIG_DICT = read_yaml(GLOBALS_CONFIG)
 
-RAW_DATA_PATH = ROOT_DIR.joinpath(GLOBALS_CONFIG_DICT["raw"])
+RAW_DATA_PATH = GLOBALS_CONFIG_DICT["raw"]
 
-INTERMEDIATE_DATA_PATH = ROOT_DIR.joinpath(GLOBALS_CONFIG_DICT["intermediate"])
+INTERMEDIATE_DATA_PATH = GLOBALS_CONFIG_DICT["intermediate"]
 
-PRIMARY_DATA_PATH = ROOT_DIR.joinpath(GLOBALS_CONFIG_DICT["primary"])
+PRIMARY_DATA_PATH = GLOBALS_CONFIG_DICT["primary"]
