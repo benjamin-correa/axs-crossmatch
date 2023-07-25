@@ -30,8 +30,8 @@ def _unionAll(*sdf: DataFrame):
 if __name__ == "__main__":
     spark = start_spark()
 
-    file_path = PRIMARY_DATA_PATH.joinpath("catwise.csv")
-    primary_catwise_path = PRIMARY_DATA_PATH.joinpath("catwise")
+    file_path = PRIMARY_DATA_PATH + "catwise.csv"
+    primary_catwise_path = PRIMARY_DATA_PATH + "catwise/"
     columns = DOWNLOAD_CATALOG_DICT["catwise"]["columns_map"].keys()
     from pyspark.sql.functions import col
 
@@ -49,6 +49,6 @@ if __name__ == "__main__":
     )
     catwise_df = catwise_df.select([col(c).cast("string") for c in catwise_df.columns])
     catwise_df.write.mode("overwrite").option("header", False).csv(
-        str(primary_catwise_path.joinpath("catwise.csv"))
+        str(primary_catwise_path + "catwise.csv")
     )
 

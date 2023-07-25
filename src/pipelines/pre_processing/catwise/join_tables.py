@@ -44,37 +44,51 @@ if __name__ == "__main__":
     files = os.listdir(intermediate_catwise_path)
     sdf_list = []
     total_tables = 0
-    for file_name in tqdm(files):
+    batch_tables = 50
+    union_sdf = None
+    for file_name in files:
         if file_name.endswith(".csv"):
-            # if len(sdf_list) > 10000:
-            #     log.info("Joining tables: %s/%s", total_tables, len(files))
-            #     union_sdf = _unionAll(*sdf_list)
-            #     union_sdf.persist(pyspark.StorageLevel.DISK_ONLY)
-            #     sdf_list = [union_sdf]
-            #     save_sdf = union_sdf.select([col(c).cast("string") for c in union_sdf.columns])
-            #     save_sdf.write.mode("overwrite").option("header", False).csv(
-            #         str(primary_catwise_path + "catwise.csv")
-            #     )
-            #     del save_sdf
-            # else:
-            file_path = str(intermediate_catwise_path + file_name)
-            catwise_df = _read_csv(file_path)
-            catwise_df.createOrReplaceTempView("table")
+            if len(sdf_list) < batch_tables:
+                file_path = str(intermediate_catwise_path + file_name)
+                catwise_df = _read_csv(file_path)
+                catwise_df.createOrReplaceTempView("table")
 
-            catwise_geom = spark.sql(
-                f"""
-                SELECT
-                    _c2 AS ra_point, _c3 AS dec_point, {', '.join(catwise_df.columns)}
-                FROM
-                    table
-                """
-            )
-            sdf_list.append(catwise_geom)
-            total_tables += 1
+                catwise_geom = spark.sql(
+                    f"""
+                    SELECT
+                        _c2 AS ra_point, _c3 AS dec_point, {', '.join(catwise_df.columns)}
+                    FROM
+                        table
+                    """
+                )
+                sdf_list.append(catwise_geom)
+                total_tables += 1
+                log.info("Adding table %s: %s/%s", file_name, total_tables, len(files))
+            if len(sdf_list) >= batch_tables:
+                log.info("Joining tables: %s/%s", total_tables, len(files))
+                if not union_sdf:
+                    union_sdf = sdf_list.pop(0)
+                # union_sdf = _unionAll(*sdf_list)
+                for sdf in sdf_list:
+                    union_sdf = union_sdf.union(sdf)
+                    sdf.unpersist()
+                union_sdf.persist(pyspark.StorageLevel.MEMORY_AND_DISK)
+                union_sdf.repartition(total_tables*2)
+                sdf_list = [union_sdf]
+                save_sdf = union_sdf.select([col(c).cast("string") for c in union_sdf.columns])
+                save_sdf.write.mode("overwrite").option("header", False).csv(
+                    str(primary_catwise_path + "catwise.csv")
+                )
+                save_sdf.unpersist()
 
     log.info("Joining tables: %s/%s", total_tables, len(files))
-    union_sdf = _unionAll(*sdf_list)
-    union_sdf.persist(pyspark.StorageLevel.DISK_ONLY)
+    # union_sdf = _unionAll(*sdf_list)
+    if not union_sdf:
+        union_sdf = sdf_list.pop(0)
+    for sdf in sdf_list:
+        union_sdf = union_sdf.union(sdf)
+        sdf.unpersist()
+    union_sdf.persist(pyspark.StorageLevel.MEMORY_AND_DISK)
     save_sdf = union_sdf.select([col(c).cast("string") for c in union_sdf.columns])
     save_sdf.write.mode("overwrite").option("header", False).csv(
         str(primary_catwise_path + "catwise.csv")

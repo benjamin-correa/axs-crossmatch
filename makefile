@@ -3,10 +3,25 @@ test:
 	@python src/pipelines/query/catwise/test.py
 	@python src/pipelines/query/catwise/query_data.py
 
+create-parquet:
+	@-rm -r data/04_query/catwise/catwise.parquet
+	@python src/pipelines/query/catwise/create_parquet.py
+
+create-geo-parquet:
+	@-rm -r data/04_query/catwise/catwise_geohash.parquet
+	@python src/pipelines/query/catwise/create_geo_parquet.py
+
+create-index:
+	@python src/pipelines/query/catwise/create_index.py
+
 filter-columns:
 	@find data/02_intermediate/** -empty -type d -delete
 	@python src/pipelines/pre_processing/catwise/filter_columns_spark.py
 
+
+create-coordinates:
+	@-rm -r data/03_primary/catwise/catwise/
+	@python src/pipelines/pre_processing/catwise/create_coordinates.py
 
 join-tables:
 	@python src/pipelines/pre_processing/catwise/join_tables.py
@@ -48,11 +63,14 @@ docker-run-hdfs:
 	@-docker container rm -f hdfs-datanode3
 	docker run -d --net dock_net --hostname namenode-master -p 9870:9870 -p 50030:50030 --name hdfs-namenode -v $(shell pwd):/home/axs-crossmatch hdfs-namenode:latest
 	docker run -d --net dock_net --name hdfs-datanode1 hdfs-datanode:latest
-	docker run -d --net dock_net --name hdfs-datanade2 hdfs-datanode:latest
-	docker run -d --net dock_net --name hdfs-datanode3 hdfs-datanode:latest 
+	# docker run -d --net dock_net --name hdfs-datanade2 hdfs-datanode:latest
+	# docker run -d --net dock_net --name hdfs-datanode3 hdfs-datanode:latest 
 
 hdfs-inspect:
 	docker exec -it hdfs-namenode bash	
+
+sedona-test:
+	@docker run --rm --net dock_net -it --name=sedona_test -v $(shell pwd):/home/axs-crossmatch --workdir /home/axs-crossmatch -p 8081:8080 sedona:latest bash
 
 docker-build-all:
 	make docker-build-sedona

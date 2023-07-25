@@ -6,7 +6,6 @@ from typing import Optional
 
 import pyspark.sql.types
 from pyspark.sql.functions import col
-import os
 
 sys.path.append("src")
 
