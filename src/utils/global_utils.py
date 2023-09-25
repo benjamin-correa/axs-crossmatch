@@ -18,6 +18,8 @@ from pyspark.sql import SparkSession
 from sedona.register import SedonaRegistrator
 from sedona.utils import KryoSerializer
 from sedona.utils import SedonaKryoRegistrator
+from sedona.spark import *
+
 
 log = logging.getLogger(__name__)
 
@@ -107,35 +109,35 @@ def start_spark():
         master: Optional[str] = "local[*]", app_name: Optional[str] = "my_app"
     ) -> SparkSession:
         """Create a spark session."""
-        extra_jars = load_extra_jars()
-
-        spark = (
-            SparkSession.builder.appName(app_name)
-            .master(master)
-            .config("spark.serializer", KryoSerializer.getName)
-            .config("spark.kryo.registrator", SedonaKryoRegistrator.getName)
-            .config("spark.jars", ",".join(extra_jars))
-            .config("spark.executor.memory", "300G")
-            .config("spark.driver.memory", "300G")
-            .config("spark.driver.maxResultSize", "300G")
-            .config("spark.hadoop.dfs.replication", 1)
+        config = (
+            SedonaContext.builder().appName(app_name).
+            config('spark.jars.packages',
+                'org.apache.sedona:sedona-spark-shaded-3.0_2.12:1.4.1,'
+                'org.datasyslab:geotools-wrapper:1.4.0-28.2'
+            )
+            .config("spark.executor.memory", "3g")
+            .config("spark.driver.memory", "300g")
+            .config("spark.driver.maxResultSize", "300g")
+            .config("spark.sql.execution.arrow.pyspark.enabled", "true")
             .config("spark.sql.shuffle.partitions", "10000")
             .config("spark.sql.adaptive.enabled", True)
             .config("spark.sql.adaptive.coalescePartitions.enabled", True)
             .config("spark.sql.adaptive.skewJoin.enabled", True)
-            .config("sedona.join.optimizationmode", "all")
+            .config("spark.sql.hive.filesourcePartitionFileCacheSize", 2147483648)
+            .config("spark.default.parallelism", 192)
+            .config("spark.dynamicAllocation.enabled", True)
+            .config("spark.sql.adaptive.skewJoin.skewedPartitionFactor", 3)
+            .config("spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes", "256K")
+            .config("spark.kryoserializer.buffer.max", "2047m")
+            .config("spark.sql.autoBroadcastJoinThreshold", "100m")
             .getOrCreate()
         )
+        sedona = SedonaContext.create(config)
+        sedona.conf.set("sedona.global.index","true")
+        sedona.conf.set("sedona.global.indextype", "rtree")
+        sedona.conf.set("sedona.join.gridtype", "quadtree")
 
-        return spark
-
-    def load_extra_jars() -> list:
-        """Load extra jars."""
-        extra_jars_dir = os.path.join(os.environ["SPARK_HOME"], "extra_jars")
-        return [
-            os.path.join(extra_jars_dir, x)
-            for x in os.listdir(os.path.join(os.environ["SPARK_HOME"], "extra_jars"))
-        ]
+        return sedona
 
     def set_logging(spark: SparkSession, log_level: Optional[str] = None) -> None:
         """Set log level - ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN."""
@@ -146,7 +148,19 @@ def start_spark():
 
     spark: SparkSession = create_session(app_name="sedona")
     set_logging(spark, log_level="WARN")
-    SedonaRegistrator.registerAll(spark)
     print(spark.sparkContext._conf.getAll())
 
     return spark
+
+
+def arcsec_to_degrees(arcminutes: float, arcseconds: float) -> float:
+    """Converts arceseconds to degrees
+
+    Args:
+        arcminutes (float): Arcminutes to be converted
+        arcseconds (float): Arcsecons to be converted
+
+    Returns:
+        float: Dergrees
+    """
+    return arcminutes/60.0 + arcseconds/3600.0

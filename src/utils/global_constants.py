@@ -18,11 +18,11 @@ NUMBER_PROCESSES = 4
 
 # ROOT_DIR = Path(os.getcwd())
 
-CONGIF_FOLDER = "conf/"
+CONGIF_FOLDER = "config/"
 
 GLOBALS_CONFIG = CONGIF_FOLDER + "globals.yml"
 
-DOWNLOAD_CONFIG = CONGIF_FOLDER + "pre-processing/" + "pre-processing.yml"
+DOWNLOAD_CONFIG = CONGIF_FOLDER + "catwise/" + "catwise.yml"
 
 DOWNLOAD_CATALOG_DICT = read_yaml(DOWNLOAD_CONFIG)
 

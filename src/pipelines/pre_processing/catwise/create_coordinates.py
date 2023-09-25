@@ -42,13 +42,25 @@ if __name__ == "__main__":
         if file_name.endswith(".csv"):
             file_path = str(intermediate_catwise_path + file_name)
             catwise_df = _read_csv(file_path)
+            fix_table = spark.read.option("header", True).csv("data/03_primary/catwise2020_table1_20201012.csv")
+            fix_table.createOrReplaceTempView("offset_fix")
             catwise_df.createOrReplaceTempView("table")
+            columns = catwise_df.columns
+            sub_statement = {
+                "_c2": "_c2 + offsetra AS _c2",
+                "_c3": "_c3 + offsetdec AS _c3",
+                "_c12": "_c12 + offsetpmra AS _c12",
+                "_c13": "_c13 + offsetpmdec AS _c13",
+            }
+            columns = [sub_statement.get(item,item) for item in columns]
             catwise_geom = spark.sql(
                 f"""
                 SELECT
-                    _c2 AS ra_point, _c3 AS dec_point, {', '.join(catwise_df.columns)}
+                    _c2 + offsetra AS ra_point, _c3 + offsetdec AS dec_point, {', '.join(columns)}
                 FROM
-                    table
+                    table, offset_fix
+                WHERE
+                    offset_fix.tile = '{file_name.split("_")[0]}'
                 """
             )
             total_tables += 1

@@ -1,0 +1,5 @@
+raw: "data/01_raw/"
+intermediate: "data/02_intermediate/"
+primary: "data/03_primary/"
+query: "data/04_query/"
+experiments: "data/10_experiments/"

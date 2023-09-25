@@ -11,12 +11,22 @@ create-geo-parquet:
 	@-rm -r data/04_query/catwise/catwise_geohash.parquet
 	@python src/pipelines/query/catwise/create_geo_parquet.py
 
+create-equi-parquet:
+	@python src/pipelines/query/catwise/create_parquet_equi_join.py
+
 create-index:
 	@python src/pipelines/query/catwise/create_index.py
 
 filter-columns:
 	@find data/02_intermediate/** -empty -type d -delete
 	@python src/pipelines/pre_processing/catwise/filter_columns_spark.py
+
+process-error-table:
+	@python src/pipelines/pre_processing/catwise/process_error_table.py
+
+create-all-equi-parquet:
+	python3 src/pipelines/query/catwise/create_parquet_equi_join.py --cellid 4
+	python3 src/pipelines/query/catwise/create_parquet_equi_join.py --cellid 9
 
 
 create-coordinates:
@@ -75,3 +85,9 @@ sedona-test:
 docker-build-all:
 	make docker-build-sedona
 	make docker-build-hdfs
+
+start-server-debug:
+	uvicorn sedona_api:app --reload
+
+start-server:
+	uvicorn sedona_api:app
